@@ -1,0 +1,10 @@
+{
+  "pipeline": "univariate_overnight_open",
+  "ticker": "AAPL",
+  "lookback": 60,
+  "trim_years": 10,
+  "calendar": "XNYS",
+  "feature_in": "OvernightLogRet (standardized)",
+  "target": "OvernightLogRet",
+  "reconstruction": "Open_t = Prev_Close_t * exp(OvernightLogRet_t)"
+}

@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+yfinance
+pandas
+numpy
+scikit-learn
+pandas_market_calendars
+tensorflow
+joblib
+python-multipart
+flask
+Werkzeug
+flask-cors
+python-dotenv
+gunicorn

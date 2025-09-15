@@ -1,0 +1,67 @@
+body { scroll-behavior: smooth; }
+
+.hero {
+  background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+  color: #fff;
+}
+.hero p { opacity: 0.9; }
+
+.card.mini .card-body { padding: 0.75rem 0.75rem; }
+
+#resultsPanel.d-none,
+#analysisOutput.d-none { display: none !important; }
+#resultsPanel .card-body { min-height: 420px; }
+#resultsChart { width: 100%; height: 300px; }
+
+/* Alerts hidden helper */
+.alert.d-none { display: none !important; }
+
+/* Keep results card tidy */
+#resultsPanel .card-body { min-height: 420px; }
+
+/* Chart sizing */
+#resultsChart { width: 100%; height: 300px; }
+.card.mini canvas { width: 100%; height: 260px; }
+
+
+/* Prevent layout shift: give charts a fixed space */
+.fixed-chart { height: 320px; }       /* container height */
+.fixed-chart canvas { width: 100% !important; height: 260px !important; }
+
+
+#resultsPanel .card-body { min-height: 420px; }
+#resultsChart { width: 100% !important; height: 300px !important; }
+
+/* Hide alerts when not used */
+.alert.d-none { display: none !important; }
+
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-color: #f8f9fa; /* light backdrop under the image */
+}
+
+/* Background image, soft and tasteful */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: center / cover no-repeat;
+  /* Pick ONE of the following image URLs based on your stack: */
+  background-image: url("/static/img/hero.png");            /* common (Flask/static) */
+  /* background-image: url("app/static/img/hero.png"); */    /* plain HTML path */
+  /* background-image: url("{{ url_for('static', filename='img/hero.png') }}"); */  /* Flask/Jinja */
+  /* background-image: url("{% static 'img/hero.png' %}"); */                        /* Django */
+  opacity: 0.12;                 /* <= make it not too prominent */
+  filter: saturate(0.8) contrast(0.95);
+  border-radius: inherit;        /* match .rounded-3 */
+  pointer-events: none;          /* keep clicks on content */
+  z-index: 0;
+}
+
+/* Keep your hero content above the image */
+.hero > .container-fluid {
+  position: relative;
+  z-index: 1;
+}

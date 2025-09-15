@@ -1,0 +1,9 @@
+{
+  "pipeline": "univariate_log_return",
+  "ticker": "AAPL",
+  "lookback": 90,
+  "trim_years": 10,
+  "calendar": "XNYS",
+  "feature": "Close",
+  "target": "LogRet"
+}

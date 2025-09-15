@@ -1,0 +1,10 @@
+{
+  "pipeline": "univariate_high",
+  "ticker": "AAPL",
+  "lookback": 60,
+  "trim_years": 10,
+  "calendar": "XNYS",
+  "feature_in": "HighLogRet (standardized)",
+  "target": "HighLogRet",
+  "reconstruction": "High_t = Prev_Close_t * exp(HighLogRet_t)"
+}

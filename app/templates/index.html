@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="section-wrap container mt-4">
+  <div class="section-bg" aria-hidden="true"></div> <!-- covers header + cards -->
+
+  <div class="p-4 mb-4 rounded-3 hero">
+    <div class="hero-art" aria-hidden="true"></div> 
+    <div class="container-fluid py-4 position-relative">
+      <h1 class="display-6 fw-bold">StockApp — Predict and Analyze Stock Prices</h1>
+      <p class="col-lg-8 fs-6">
+        AI-powered forecasts for predicting closing, opening, and high prices of stocks — US tickers only.
+      </p>
+    </div>
+  </div>
+
+  <div class="row g-4 position-relative">
+    <!-- Close -->
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title"><i class="bi bi-graph-up-arrow me-2"></i>Closing Stock Price Prediction</h5>
+          <p class="card-text small text-secondary">Multi-day closing forecasts for US tickers—choose horizon</p>
+          <button class="btn btn-primary mt-auto" data-bs-toggle="modal" data-bs-target="#modalClose">Predict Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open -->
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title"><i class="bi bi-sunrise me-2"></i>Opening Price Prediction</h5>
+          <p class="card-text small text-secondary">Next-day to multi-day open forecasts for US tickers—quantify the expected gap vs prior close.</p>
+          <button class="btn btn-primary mt-auto" data-bs-toggle="modal" data-bs-target="#modalOpen">Predict Open</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- High -->
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title"><i class="bi bi-arrow-up-right me-2"></i>Predict the highest Stock Price</h5>
+          <p class="card-text small text-secondary">Estimate the session’s high to gauge upside room (US tickers only).</p>
+          <button class="btn btn-primary mt-auto" data-bs-toggle="modal" data-bs-target="#modalHigh">Predict High</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Analysis -->
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title"><i class="bi bi-bar-chart-line me-2"></i>Stock Analysis</h5>
+          <p class="card-text small text-secondary">Peek at first 5 rows + MA30/50 overlays for Close / Open / High.</p>
+          <a class="btn btn-primary mt-auto" href="#analysisPanel" id="openAnalysis">Open Analysis</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Results panel -->
+<!-- Results panel -->
+<section id="resultsPanel" class="mt-5 d-none">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="card-title mb-0" id="resultsTitle">Results</h5>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary btn-sm" id="btnExportForecast">
+            <i class="bi bi-download me-1"></i>
+          </button>
+          <button class="btn btn-outline-dark btn-sm" id="btnClearResults">
+            <i class="bi bi-x-circle me-1"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="resultsAlert" class="alert alert-danger d-none mt-3" role="alert"></div>
+
+      <div class="mt-3" style="height: 320px;">
+        <canvas id="resultsChart" height="120"></canvas>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table table-sm table-striped align-middle" id="resultsTable">
+          <thead><tr><th>Date</th><th>Predicted</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="small text-secondary mt-2" id="metricsBox"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Analysis panel -->
+<!-- Analysis panel -->
+<section id="analysisPanel" class="mt-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="d-flex align-items-end gap-2 flex-wrap">
+        <div>
+          <label class="form-label small">Ticker</label>
+          <input type="text" class="form-control" id="analysisTicker" placeholder="e.g. AAPL">
+        </div>
+        <button class="btn btn-dark" id="btnRunAnalysis"><i class="bi bi-lightning-charge me-1"></i>Run Analysis</button>
+      </div>
+
+      <div id="analysisOutput" class="mt-4 d-none">
+        <h6 class="d-flex justify-content-between align-items-center">
+          <span>First 5 Rows</span>
+          <button class="btn btn-outline-secondary btn-sm" id="btnExportHead">
+            <i class="bi bi-download me-1"></i>Download CSV
+          </button>
+        </h6>
+
+        <div id="analysisAlert" class="alert alert-danger d-none" role="alert"></div>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-striped align-middle" id="analysisHeadTable">
+            <thead><tr><th>Date</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>Volume</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="row g-4 mt-1">
+          <div class="col-12 col-lg-6">
+            <div class="card mini shadow-sm"><div class="card-body fixed-chart">
+              <h6 class="card-title">Close: MA30 / MA50</h6>
+              <canvas id="closeMAChart"></canvas>
+            </div></div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card mini shadow-sm"><div class="card-body fixed-chart">
+              <h6 class="card-title">Open: MA30 / MA50</h6>
+              <canvas id="openMAChart"></canvas>
+            </div></div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card mini shadow-sm"><div class="card-body fixed-chart">
+              <h6 class="card-title">High: MA30 / MA50</h6>
+              <canvas id="highMAChart"></canvas>
+            </div></div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card mini shadow-sm"><div class="card-body fixed-chart">
+              <h6 class="card-title">Close (raw)</h6>
+              <canvas id="closeRawChart"></canvas>
+            </div></div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card mini shadow-sm"><div class="card-body fixed-chart">
+              <h6 class="card-title">Open (raw)</h6>
+              <canvas id="openRawChart"></canvas>
+            </div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======= Modals: Close / Open / High ======= -->
+
+<!-- Close -->
+<div class="modal fade" id="modalClose" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="formClose">
+      <div class="modal-header">
+        <h5 class="modal-title">Predict Close</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body row g-3">
+        <div class="col-6">
+          <label class="form-label small">Ticker</label>
+          <input type="text" class="form-control" name="ticker" placeholder="e.g. AAPL" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label small">Days</label>
+          <input type="number" class="form-control" name="days" min="1" max="252" placeholder="e.g. 30" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary w-100" type="submit">Run Prediction</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Open -->
+<div class="modal fade" id="modalOpen" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="formOpen">
+      <div class="modal-header">
+        <h5 class="modal-title">Predict Open</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body row g-3">
+        <div class="col-6">
+          <label class="form-label small">Ticker</label>
+          <input type="text" class="form-control" name="ticker" placeholder="e.g. AAPL" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label small">Days</label>
+          <input type="number" class="form-control" name="days" min="1" max="252" placeholder="e.g. 30" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary w-100" type="submit">Run Prediction</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- High -->
+<div class="modal fade" id="modalHigh" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="formHigh">
+      <div class="modal-header">
+        <h5 class="modal-title">Predict High</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body row g-3">
+        <div class="col-6">
+          <label class="form-label small">Ticker</label>
+          <input type="text" class="form-control" name="ticker" placeholder="e.g. AAPL" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label small">Days</label>
+          <input type="number" class="form-control" name="days" min="1" max="252" placeholder="e.g. 30" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary w-100" type="submit">Run Prediction</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
