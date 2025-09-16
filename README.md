@@ -42,27 +42,3 @@ This project is a **Stock Price Prediction Web Application** built with **Flask*
 
 ---
 
-## Project Structure
-
-Stock Price Prediction/
-│
-├── app/
-│ ├── init.py # Application initialization and config setup
-│ ├── routes/ # API routes and views
-│ │ ├── health.py # Health check route
-│ │ ├── analysis.py # Analysis route to fetch stock data
-│ │ └── predict.py # Prediction routes for close, open, high
-│ ├── services/ # Application services for data fetching, model handling
-│ │ ├── data_fetch.py # Fetch stock data from Yahoo Finance
-│ │ ├── model_manager.py # Manage loading, training, and finetuning models
-│ │ ├── forecaster.py # Forecasting stock prices based on the model
-│ │ └── sequences.py # Prepare data sequences for training
-│ ├── static/ # Static assets (CSS, JS, images)
-│ │ ├── css/
-│ │ │ └── styles.css # Styles for the frontend
-│ │ └── js/
-│ │ └── main.js # JS functionality for frontend
-│ ├── templates/ # HTML templates
-│ │ └── index.html # Main landing page
-│ ├── config.py # Configuration settings
-└── README.md # Project description and instructions
