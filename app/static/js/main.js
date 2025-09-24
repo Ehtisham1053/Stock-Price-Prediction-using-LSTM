@@ -1,9 +1,11 @@
-// main.js — predictions + analysis + UX polish (with destroyChart defined)
+// main.js contain the API calls(both GET and POST), rendering(Mean how to display the data on the frontend) logic.
+// main.js — manage the predictions + analysis ( by using its defined API's that contact with  /api/predict and /api/analyze endpoints respectively) + UX polish (accurately display the data on the frontend)
+// Chart.js instance for the results chart
 
 let resultsChart = null;
-const chartRegistry = {};   // holds Chart.js instances by canvas id
-let lastForecastCache = null;   // for CSV export
-let lastHeadRowsCache = null;   // for CSV export
+const chartRegistry = {};   
+let lastForecastCache = null;   
+let lastHeadRowsCache = null;   
 
 function $(sel) { return document.querySelector(sel); }
 function $all(sel) { return Array.from(document.querySelectorAll(sel)); }
@@ -56,7 +58,7 @@ function downloadCSV(filename, csv) {
   URL.revokeObjectURL(url);
 }
 
-/* -------------------- Prediction -------------------- */
+/* -------------------- Prediction API-------------------- */
 
 async function callPredict(head, ticker, days, submitBtn) {
   const alertEl = $("#resultsAlert");
